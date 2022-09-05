@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
 
-Widget buildNewsItem(article) {
+Widget buildNewsItem(article,context) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
     child: Row(
@@ -17,7 +17,7 @@ Widget buildNewsItem(article) {
             imageUrl: '${article['urlToImage']}',
             progressIndicatorBuilder: (context, url, downloadProgress) =>
                 CircularProgressIndicator(value: downloadProgress.progress,),
-            errorWidget: (context, url, error) => Icon(Icons.downloading),
+            errorWidget: (context, url, error) => Icon(Icons.downloading,color: Colors.grey),
             fit: BoxFit.cover,
           ),
         ),
@@ -33,10 +33,7 @@ Widget buildNewsItem(article) {
                 Expanded(
                   child: Text(
                     '${article['title']}',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.bodyText1,
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis ,
                   ),
@@ -73,7 +70,7 @@ Widget buildSeperatedContainerList(){
     condition: list.length > 0,
     builder: (context)=> ListView.separated(
         physics: BouncingScrollPhysics() ,
-        itemBuilder: (context , index) =>buildNewsItem(list[index]),
+        itemBuilder: (context , index) =>buildNewsItem(list[index],context),
         separatorBuilder: (context , index) =>buildSeperatedContainerList(),
         itemCount: list.length
     ),

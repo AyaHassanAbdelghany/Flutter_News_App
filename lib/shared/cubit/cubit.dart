@@ -1,11 +1,10 @@
-import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/modules/business/business_screen.dart';
 import 'package:news_app/modules/science/science_screen.dart';
-import 'package:news_app/modules/settings/settings_screen.dart';
 import 'package:news_app/modules/sports/sports_screen.dart';
+import 'package:news_app/network/local/cache_helper.dart';
 import 'package:news_app/shared/constants/constants.dart';
 import 'package:news_app/shared/cubit/states.dart';
 
@@ -17,44 +16,37 @@ class NewsCubit extends Cubit<NewsStates>{
   int currentIndex = 0;
 
   List<BottomNavigationBarItem> bottomItems =[
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
         icon: Icon(
       Icons.business
 
       ),
         label:'Business'
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
         icon: Icon(
             Icons.sports
         ),
         label:'Sports'
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
         icon: Icon(
             Icons.science
         ),
         label:'Science'
     ),
-    BottomNavigationBarItem(
-        icon: Icon(
-            Icons.settings
-        ),
-        label:'Settings'
-    ),
-
   ];
 
   List<Widget> screens =[
     BusinessScreen(),
     SportsScreen(),
     Sciencecreen(),
-    SettingsScreen(),
   ];
 
   List<dynamic> businessNews = [];
   List<dynamic> sportsNews = [];
   List<dynamic> scienceNews = [];
+  bool isDark = false;
 
   NewsCubit (): super(NewsInitialState());
 
@@ -62,8 +54,11 @@ class NewsCubit extends Cubit<NewsStates>{
 
   void changeIndex(int index){
     currentIndex = index;
-    if(index ==1)  getNews(CATOGERY_SPORTS);
-    else if(index == 2) getNews(CATOGERY_SCIENCE);
+    if(index ==1) {
+      getNews(CATOGERY_SPORTS);
+    } else if(index == 2) {
+      getNews(CATOGERY_SCIENCE);
+    }
     emit(NewsChangeBottomNavBarState());
   }
 
@@ -85,18 +80,21 @@ class NewsCubit extends Cubit<NewsStates>{
   void setCategoryNewsSuccess(String category,Response<dynamic> value){
     switch(category){
       case CATOGERY_BUSINESS :
-        if(businessNews.length==0)
-        businessNews = value.data['articles'];
+        if(businessNews.isEmpty) {
+          businessNews = value.data['articles'];
+        }
         emit(NewsGetBusinessSuccessState());
         break;
       case CATOGERY_SPORTS :
-        if(sportsNews.length==0)
+        if(sportsNews.isEmpty) {
           sportsNews = value.data['articles'];
+        }
         emit(NewsGetSportsSuccessState());
         break;
       case CATOGERY_SCIENCE :
-        if(scienceNews.length==0)
+        if(scienceNews.isEmpty) {
           scienceNews = value.data['articles'];
+        }
         emit(NewsGetScienceSuccessState());
         break;
     }
@@ -113,6 +111,17 @@ class NewsCubit extends Cubit<NewsStates>{
       case CATOGERY_SCIENCE :
         emit(NewsGetScienceErrorState(error.toString()));
         break;
+    }
+  }
+
+  void changeAppThemeMode({required bool fromShared}){
+    if(fromShared){
+      isDark = CacheHelper.getData(key: 'isDark') ?? false;
+      emit(ChangeThemeModeState());
+    }
+    else {
+      isDark = !isDark;
+      CacheHelper.putData(key: 'isDark', value: isDark).then((value) => emit(ChangeThemeModeState()));
     }
   }
 

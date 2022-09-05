@@ -1,32 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:news_app/shared/constants/constants.dart';
 import 'package:news_app/shared/cubit/cubit.dart';
 import 'package:news_app/shared/cubit/states.dart';
 
 class NewsHomeLayout extends StatelessWidget {
+  const NewsHomeLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:(context)=> NewsCubit()..getNews(CATOGERY_BUSINESS),
-      child: BlocConsumer<NewsCubit,NewsStates>(
+    return BlocConsumer<NewsCubit,NewsStates>(
         listener: (context,state){},
         builder: (context,state){
           var cubit = NewsCubit.getInstance(context);
           return  Scaffold(
             appBar: AppBar(
-             title: Text(
+             title: const Text(
                'News App'
              ),
               actions: [
-                Padding(
-                  padding: const EdgeInsetsDirectional.only(
+                const Padding(
+                  padding: EdgeInsetsDirectional.only(
                     end: 10.0
                   ),
                   child: Icon(
                       Icons.search
                   ),
+                ),
+                Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                      end: 10.0
+                  ),
+                  child: IconButton(
+                      onPressed: (){
+                        cubit.changeAppThemeMode(fromShared: false);
+                      },
+                      icon: const Icon(
+                          Icons.brightness_4_outlined,
+                      )
+                  )
                 ),
               ],
             ),
@@ -40,7 +51,6 @@ class NewsHomeLayout extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
+      );
   }
 }
