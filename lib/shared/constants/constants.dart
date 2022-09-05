@@ -5,3 +5,4 @@ const String CATOGERY_SPORTS = 'sports';
 const String CATOGERY_SCIENCE = 'science';
 const String URL = 'v2/top-headlines';
 const String BASE_URL = 'https://newsapi.org/';
+const String URL_SEARCH = 'v2/everything';

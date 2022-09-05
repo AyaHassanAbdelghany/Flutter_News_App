@@ -46,6 +46,8 @@ class NewsCubit extends Cubit<NewsStates>{
   List<dynamic> businessNews = [];
   List<dynamic> sportsNews = [];
   List<dynamic> scienceNews = [];
+  List<dynamic> searchNews = [];
+
   bool isDark = false;
 
   NewsCubit (): super(NewsInitialState());
@@ -123,6 +125,22 @@ class NewsCubit extends Cubit<NewsStates>{
       isDark = !isDark;
       CacheHelper.putData(key: 'isDark', value: isDark).then((value) => emit(ChangeThemeModeState()));
     }
+  }
+
+  void getSearchNews(String value){
+    emit(NewsLoadingState());
+    DioHelper.getNews(url: URL_SEARCH, query: {
+      'q': value,
+      'apiKey': APIKEY
+    }).then((value)
+    {
+      searchNews = value.data['articles'];
+      emit(NewsGetSearchSuccessState());
+
+    }).catchError((error)
+    {
+      emit(NewsGetSearchErrorState(error.toString()));
+    });
   }
 
 }

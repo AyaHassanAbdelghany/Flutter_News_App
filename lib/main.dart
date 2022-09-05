@@ -26,8 +26,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>NewsCubit()..getNews(CATOGERY_BUSINESS)..changeAppThemeMode(fromShared: true),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => NewsCubit()..changeAppThemeMode(fromShared: true)),
+        BlocProvider(create: (context) =>NewsCubit()..getNews(CATOGERY_BUSINESS),),
+      ],
       child: BlocConsumer<NewsCubit,NewsStates>(
         listener: (context,state) {},
         builder: (context,state){

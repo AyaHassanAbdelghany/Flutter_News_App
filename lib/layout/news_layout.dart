@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/modules/search/search_screen.dart';
+import 'package:news_app/shared/components/components.dart';
 import 'package:news_app/shared/cubit/cubit.dart';
 import 'package:news_app/shared/cubit/states.dart';
 
@@ -18,13 +20,12 @@ class NewsHomeLayout extends StatelessWidget {
                'News App'
              ),
               actions: [
-                const Padding(
-                  padding: EdgeInsetsDirectional.only(
-                    end: 10.0
-                  ),
-                  child: Icon(
-                      Icons.search
-                  ),
+                IconButton(
+                    onPressed: ()
+                    {
+                      navigatTo(context, SearchScreen());
+                    },
+                    icon: Icon(Icons.search)
                 ),
                 Padding(
                   padding: const EdgeInsetsDirectional.only(
