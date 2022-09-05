@@ -1,58 +1,64 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:conditional_builder/conditional_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/modules/web_view/web_view_screen.dart';
 
 Widget buildNewsItem(article, context) {
-  return Padding(
-    padding: const EdgeInsets.all(10.0),
-    child: Row(
-      children: [
-        Container(
-          width: 140.0,
-          height: 140.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: CachedNetworkImage(
-            imageUrl: '${article['urlToImage']}',
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(
-              value: downloadProgress.progress,
-            ),
-            errorWidget: (context, url, error) =>
-                Icon(Icons.downloading, color: Colors.grey),
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(
-          width: 20.0,
-        ),
-        Expanded(
-          child: Container(
+  return InkWell(
+    onTap: (){
+      navigatTo(context, WebViewScreen(article['url']));
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Row(
+        children: [
+          Container(
+            width: 140.0,
             height: 140.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    '${article['title']}',
-                    style: Theme.of(context).textTheme.bodyText1,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Text(
-                  '${article['publishedAt']}',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: CachedNetworkImage(
+              imageUrl: '${article['urlToImage']}',
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(
+                value: downloadProgress.progress,
+              ),
+              errorWidget: (context, url, error) =>
+                  Icon(Icons.downloading, color: Colors.grey),
+              fit: BoxFit.cover,
             ),
           ),
-        ),
-      ],
+          SizedBox(
+            width: 20.0,
+          ),
+          Expanded(
+            child: Container(
+              height: 140.0,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${article['title']}',
+                      style: Theme.of(context).textTheme.bodyText1,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(
+                    '${article['publishedAt']}',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     ),
   );
 }
