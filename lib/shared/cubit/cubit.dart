@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:news_app/modules/business/business_screen.dart';
+import 'package:news_app/modules/home/home_screen.dart';
 import 'package:news_app/modules/science/science_screen.dart';
 import 'package:news_app/modules/sports/sports_screen.dart';
 import 'package:news_app/network/local/cache_helper.dart';
@@ -16,6 +17,13 @@ class NewsCubit extends Cubit<NewsStates>{
   int currentIndex = 0;
 
   List<BottomNavigationBarItem> bottomItems =[
+    const BottomNavigationBarItem(
+        icon: Icon(
+            Icons.home
+
+        ),
+        label:'Home'
+    ),
     const BottomNavigationBarItem(
         icon: Icon(
       Icons.business
@@ -38,11 +46,13 @@ class NewsCubit extends Cubit<NewsStates>{
   ];
 
   List<Widget> screens =[
+    HomeScreen(),
     BusinessScreen(),
     SportsScreen(),
     Sciencecreen(),
   ];
 
+  List<dynamic> homeNews = [];
   List<dynamic> businessNews = [];
   List<dynamic> sportsNews = [];
   List<dynamic> scienceNews = [];
@@ -57,9 +67,15 @@ class NewsCubit extends Cubit<NewsStates>{
   void changeIndex(int index){
     currentIndex = index;
     if(index ==1) {
-      getNews(CATOGERY_SPORTS);
+      getNews(CATOGERY_BUSINESS);
     } else if(index == 2) {
+      getNews(CATOGERY_SPORTS);
+    }
+    else if(index == 3) {
       getNews(CATOGERY_SCIENCE);
+    }
+    else{
+      getNews(CATOGERY_HOME);
     }
     emit(NewsChangeBottomNavBarState());
   }
@@ -81,20 +97,26 @@ class NewsCubit extends Cubit<NewsStates>{
 
   void setCategoryNewsSuccess(String category,Response<dynamic> value){
     switch(category){
+      case CATOGERY_HOME :
+        if(homeNews.length == 0) {
+          homeNews = value.data['articles'];
+        }
+        emit(NewsGetHomeSuccessState());
+        break;
       case CATOGERY_BUSINESS :
-        if(businessNews.isEmpty) {
+        if(businessNews.length == 0) {
           businessNews = value.data['articles'];
         }
         emit(NewsGetBusinessSuccessState());
         break;
       case CATOGERY_SPORTS :
-        if(sportsNews.isEmpty) {
+        if(sportsNews.length == 0) {
           sportsNews = value.data['articles'];
         }
         emit(NewsGetSportsSuccessState());
         break;
       case CATOGERY_SCIENCE :
-        if(scienceNews.isEmpty) {
+        if(scienceNews.length == 0) {
           scienceNews = value.data['articles'];
         }
         emit(NewsGetScienceSuccessState());
@@ -104,6 +126,9 @@ class NewsCubit extends Cubit<NewsStates>{
 
   void setCategoryNewsError(String category,String error){
     switch(category){
+      case CATOGERY_HOME :
+        emit(NewsGetHomeErrorState(error.toString()));
+        break;
       case CATOGERY_BUSINESS :
         emit(NewsGetBusinessErrorState(error.toString()));
         break;
@@ -116,14 +141,17 @@ class NewsCubit extends Cubit<NewsStates>{
     }
   }
 
-  void changeAppThemeMode({required bool fromShared}){
+  void changeAppThemeMode( bool fromShared){
     if(fromShared){
       isDark = CacheHelper.getData(key: 'isDark') ?? false;
       emit(ChangeThemeModeState());
     }
     else {
       isDark = !isDark;
-      CacheHelper.putData(key: 'isDark', value: isDark).then((value) => emit(ChangeThemeModeState()));
+      CacheHelper.putData(key: 'isDark', value: isDark).then((value) {
+        emit(ChangeThemeModeState());
+        changeIndex(currentIndex);
+      });
     }
   }
 

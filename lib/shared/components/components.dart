@@ -74,7 +74,7 @@ Widget buildSeperatedContainerList() {
   );
 }
 
-Widget buildConditionalNews(List<dynamic> list) {
+Widget buildConditionalNews(List<dynamic> list, {bool  isSearch = false}) {
   return ConditionalBuilder(
     condition: list.length > 0,
     builder: (context) => ListView.separated(
@@ -82,7 +82,7 @@ Widget buildConditionalNews(List<dynamic> list) {
         itemBuilder: (context, index) => buildNewsItem(list[index], context),
         separatorBuilder: (context, index) => buildSeperatedContainerList(),
         itemCount: list.length),
-    fallback: (context) => Center(child: CircularProgressIndicator()),
+    fallback: (context) => isSearch ? Container() :Center(child: CircularProgressIndicator()),
   );
 }
 
@@ -97,25 +97,25 @@ Widget defultTextFormField({
   IconData? sufix,
   VoidCallback? sufixOnPressed,
 }) {
-  return TextFormField(
-    obscureText: isPassword,
-    controller: controller,
-    keyboardType: type,
-    onChanged: functionOnChange,
-    decoration: InputDecoration(
-      labelText: label,
-      prefixIcon: Icon(
-        prefix,
+  return Container(
+    color: Colors.grey[200],
+    child: TextFormField(
+      obscureText: isPassword,
+      controller: controller,
+      keyboardType: type,
+      onChanged: functionOnChange,
+      decoration: InputDecoration(
+        prefixIcon: Icon(
+          prefix,
+        ),
+        suffixIcon: sufix != null
+            ? IconButton(onPressed: sufixOnPressed, icon: Icon(sufix))
+            : null,
+        border: OutlineInputBorder(),
+        hintText: label
       ),
-      suffixIcon: sufix != null
-          ? IconButton(onPressed: sufixOnPressed, icon: Icon(sufix))
-          : null,
-      border: OutlineInputBorder(borderSide: BorderSide(color: Colors.black12)),
-      labelStyle: TextStyle(
-        color: Colors.black,
-      ),
+      validator: functionValidator,
     ),
-    validator: functionValidator,
   );
 }
 

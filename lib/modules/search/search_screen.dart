@@ -37,7 +37,7 @@ class SearchScreen extends StatelessWidget {
                     }
                 ),
               ),
-              Expanded(child: buildConditionalNews(list))
+              Expanded(child: buildConditionalNews(list,isSearch: true))
             ],
           )
         );

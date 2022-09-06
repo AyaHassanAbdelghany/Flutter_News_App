@@ -5,13 +5,14 @@ import 'package:news_app/shared/components/components.dart';
 import 'package:news_app/shared/cubit/cubit.dart';
 import 'package:news_app/shared/cubit/states.dart';
 
-class NewsHomeLayout extends StatelessWidget {
-  const NewsHomeLayout({Key? key}) : super(key: key);
+class NewsLayout extends StatelessWidget {
+  const NewsLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<NewsCubit,NewsStates>(
-        listener: (context,state){},
+        listener: (context,state){
+        },
         builder: (context,state){
           var cubit = NewsCubit.getInstance(context);
           return  Scaffold(
@@ -33,7 +34,7 @@ class NewsHomeLayout extends StatelessWidget {
                   ),
                   child: IconButton(
                       onPressed: (){
-                        cubit.changeAppThemeMode(fromShared: false);
+                        cubit.changeAppThemeMode(false);
                       },
                       icon: const Icon(
                           Icons.brightness_4_outlined,
